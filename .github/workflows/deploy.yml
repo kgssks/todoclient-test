@@ -1,57 +1,59 @@
-name: deploy
+name: Deploy
+
+ 
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+
+# events but only for the master branch
 
 on:
-    push:
-        branches: [ main ]
+
+  push:
+    branches: [main]
+
+  pull_request:
+    branches: [main]
+
+ 
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 
 jobs:
-    deploy:
-        name: CD Pipeline
-        runs-on: ubuntu-20.04
 
-        strategy:
-            matrix:
-                node-version: [16.x]
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v2
+    # Steps represent a sequence of tasks that will be executed as part of the job
 
-            - name: Install Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v1
-              with:
-                  node-version: ${{ matrix.node-version }}
+    steps:
 
-            - name: Install dependencies
-              run: npm install
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Install Packages
+        run: npm install
 
-            - name: build react
-              run: npm run build
+ 
 
-            - name: Get current time
-              uses: 1466587594/get-current-time@v2
-              id: current-time
-              with:
-                format: YYYY-MM-DDTHH-mm-ss # 다른 포맷으로 변경 가능(MomentJS format syntax)
-                utcOffset: "+09:00" # 한국 시간에 맞추기 위함
+      - name: Gnerate Bundle File
+        run: npm run build
 
+      - name: check dir
+        run: cd build && ls -al
 
-            - name: Generate deployment package
-              run: |
-                mkdir -p deploy
-                cp -r ./build deploy/build
-                cp -r ./.platform deploy/
-                cp Procfile deploy/Procfile
-                
-                zip -r deploy.zip ./deploy
+      - name: Generate deployment package
+        run: cd build && zip -r deploy.zip .
 
-            - name: Deploy to EB
-              uses: einaregilsson/beanstalk-deploy@v21
-              with:
-                  aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  application_name: ${{ secrets.CLIENT_APPLICATION_NAME }}
-                  environment_name: ${{ secrets.CLIENT_ENVIRONMENT_NAME }}
-                  region: ap-northeast-2
-                  version_label: Github Action-${{steps.current-time.outputs.formattedTime}} # 배포 버전은 타임스탬프를 이용하여 구분
-                  deployment_package: deploy.zip
-                  wait_for_environment_recovery: 120
+      - name: Deploy to EB
+
+        uses: einaregilsson/beanstalk-deploy@v10
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: ${{ secrets.CLIENT_APPLICATION_NAME }}
+          environment_name: ${{ secrets.CLIENT_ENVIRONMENT_NAME }}
+          version_label: ${{github.run_number}}
+          use_existing_version_if_available: true
+          region: ap-northeast-2
+          deployment_package: build/deploy.zip
