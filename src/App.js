@@ -1,24 +1,38 @@
-import { Route, Routes } from "react-router-dom";
-import First from './Pages/First';
-import Login from './Pages/Login';
-import SignUp from './Pages/SignUp';
-import Main from './Pages/Main';
-import SignUpAuth from './Pages/SignUpAuth';
-import SignUpResult from './Pages/SignUpResult';
+import logo from './logo.svg';
+import './App.css';
+import axios from 'axios';
+import {useEffect} from 'react';
 
 function App() {
 
-  return (
-    <Routes>
-      <Route path="/" element={<First/>}/>
-      <Route path="/first" element={<First/>}/>
-      <Route path="/login" element={<Login/>}/>
-      <Route path="/signup" element={<SignUp/>}/>
-      <Route path="/signupAuth" element={<SignUpAuth/>}/>
-      <Route path="/signupResult" element={<SignUpResult/>}/>
-      <Route path="/main" element={<Main/>}/>
 
-    </Routes>
+  const callApi = async () => {
+    axios.get("/api/version").then((res) => console.log(res.data));
+  }
+
+  useEffect(()=>{
+    callApi();
+  },[]);
+
+  return <div>dddd</div>
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
   );
 }
 
