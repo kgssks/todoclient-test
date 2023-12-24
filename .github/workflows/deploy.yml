@@ -39,7 +39,7 @@ jobs:
               run: |
                 mkdir -p deploy
                 cp -r ./build deploy/build
-                cp -r ./platform deploy/
+                cp -r ./.platform deploy/
                 cp Procfile deploy/Procfile
                 
                 zip -r deploy.zip ./deploy
