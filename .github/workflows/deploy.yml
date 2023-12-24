@@ -5,25 +5,6 @@ on:
         branches: [ main ]
 
 jobs:
-    build:
-        runs-on: ubuntu-20.04
-
-        strategy:
-            matrix:
-                node-version: [16.x]
-
-        steps:
-            - name: Checkout source code.
-              uses: actions/checkout@v2
-
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v2
-              with:
-                  node-version: ${{ matrix.node-version }}
-
-            - name: Install dependencies
-              run: npm install
-
     deploy:
         name: CD Pipeline
         runs-on: ubuntu-20.04
@@ -41,10 +22,10 @@ jobs:
                   node-version: ${{ matrix.node-version }}
 
             - name: Install dependencies
-              run: npm install
+              run: npm ci
 
-            - name: Generate deployment package
-              run: zip -r deploy.zip . -x '*.git*' './node_modules/*' './aws/*' awscliv2.zip
+            - name: build
+              run: npm run build
 
             - name: Get current time
               uses: 1466587594/get-current-time@v2
@@ -53,8 +34,11 @@ jobs:
                 format: YYYY-MM-DDTHH-mm-ss # 다른 포맷으로 변경 가능(MomentJS format syntax)
                 utcOffset: "+09:00" # 한국 시간에 맞추기 위함
 
+            - name: Generate deployment package
+              run: zip -r deploy.zip ./build
+
             - name: Deploy to EB
-              uses: einaregilsson/beanstalk-deploy@v14
+              uses: einaregilsson/beanstalk-deploy@v21
               with:
                   aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
                   aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -63,3 +47,4 @@ jobs:
                   region: ap-northeast-2
                   version_label: Github Action-${{steps.current-time.outputs.formattedTime}} # 배포 버전은 타임스탬프를 이용하여 구분
                   deployment_package: deploy.zip
+                  wait_for_environment_recovery: 120
