@@ -14,8 +14,6 @@ function App() {
     callApi();
   },[]);
 
-  return <div>dddd</div>
-
   return (
     <div className="App">
       <header className="App-header">
