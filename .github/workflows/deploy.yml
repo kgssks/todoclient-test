@@ -34,8 +34,14 @@ jobs:
                 format: YYYY-MM-DDTHH-mm-ss # 다른 포맷으로 변경 가능(MomentJS format syntax)
                 utcOffset: "+09:00" # 한국 시간에 맞추기 위함
 
+
             - name: Generate deployment package
-              run: zip -r deploy.zip ./build
+              run: |
+                mkdir -p deploy
+                cp -r ./build deploy/build
+                cp Procfile deploy/Procfile
+                
+                zip -r deploy.zip ./deploy
 
             - name: Deploy to EB
               uses: einaregilsson/beanstalk-deploy@v21
