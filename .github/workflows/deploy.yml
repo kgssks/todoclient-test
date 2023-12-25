@@ -13,8 +13,15 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
 
+      - name: Install Dependencies    # 의존 파일 설치
+        run: npm install
+
+      - name: Build                   # React Build
+        run: npm run build
+
+        
       - name: Generate deployment package
-        run: zip -r ${{ github.sha }}.zip . -x "*.git*" node_modules
+        run: zip -r ${{ github.sha }}.zip ./build Dockerfile ./.nginx
 
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
