@@ -1,59 +1,30 @@
-name: Deploy
-
- 
-
-# Controls when the action will run. Triggers the workflow on push or pull request
-
-# events but only for the master branch
+name: release app
 
 on:
-
   push:
-    branches: [main]
-
-  pull_request:
-    branches: [main]
-
- 
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+    branches:
+      - 'main'
+    workflow_dispatch: # 디버깅용, actions 탭에서 직접 버튼 눌러서 트리거
 
 jobs:
-
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  deploy:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-
     steps:
-
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - name: Install Packages
-        run: npm install
-
- 
-
-      - name: Gnerate Bundle File
-        run: npm run build
-
-      - name: check dir
-        run: cd build && ls -al
+      - name: Checkout source code
+        uses: actions/checkout@v2
 
       - name: Generate deployment package
-        run: cd build && zip -r deploy.zip .
+        run: zip -r ${{ github.sha }}.zip . -x "*.git*" node_modules
 
       - name: Deploy to EB
-
-        uses: einaregilsson/beanstalk-deploy@v10
+        uses: einaregilsson/beanstalk-deploy@v20
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: ${{ secrets.CLIENT_APPLICATION_NAME }}
           environment_name: ${{ secrets.CLIENT_ENVIRONMENT_NAME }}
-          version_label: ${{github.run_number}}
-          use_existing_version_if_available: true
+          version_label: ${{ github.sha }}
+          version_description: ${{ github.event.head_commit.message }}
           region: ap-northeast-2
-          deployment_package: build/deploy.zip
+          deployment_package: ${{ github.sha }}.zip
+
