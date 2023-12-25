@@ -39,7 +39,6 @@ EOF
 COPY --from=gloursdocker/docker / /
 CMD [ "npm", "start" ]
 
-
 # 2. For Nginx setup
 FROM nginx:alpine
 
