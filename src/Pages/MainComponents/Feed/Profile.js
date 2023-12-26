@@ -1,7 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React
+//, {useEffect, useState} 
+from 'react';
 import { BsPersonCircle } from "react-icons/bs";
 import styles from './Profile.module.css';
-import axios from "axios";
+// import axios from "axios";
 
 
 export default function Profile({userName}) {

@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { TodoStateContext, TodoNextIdContext, TodoDispatchContext, TodoDateContext } from '../TodoContext';
-import { DateStateContext, DateDispatchContext } from '../DateContext';
+import { TodoStateContext, TodoNextIdContext, TodoDispatchContext,  } from '../TodoContext';
+import { DateStateContext, 
+    // DateDispatchContext 
+} from '../DateContext';
 import { format } from 'date-fns';
 import { BsCheckCircleFill, BsCircle } from 'react-icons/bs';
 import { AiFillPlusCircle } from 'react-icons/ai';
@@ -9,12 +11,12 @@ import axios from "axios";
 
 // 할 일 생성
 const TodoHead = ({ cat_title, cat_id }) => {
-    const todos = useContext(TodoStateContext);
+    // const todos = useContext(TodoStateContext);
     const dispatch = useContext(TodoDispatchContext);
     const nextId = useContext(TodoNextIdContext)
     const date = useContext(DateStateContext);
 
-    const undoneTasks = todos.filter(todo => !todo.done);
+    // const undoneTasks = todos.filter(todo => !todo.done);
     const [input_text, SetInput_text] = useState('');
     const [isFormed, SetIsFormed] = useState(false);
 
@@ -129,7 +131,7 @@ const TodoItem = ({ id, done, text }) => {
 
 // 할 일 항목 형태 정의
 const TodoItemNew = ({ id, done, text }) => {
-    const date = useContext(DateStateContext);
+    // const date = useContext(DateStateContext);
     const dispatch = useContext(TodoDispatchContext);
 
     let icon = null;
@@ -242,7 +244,7 @@ export default function TodoList({}) {
                     if (todo_list_obj.year == format(date, 'yyyy') && todo_list_obj.month == format(date, 'M') && todo_list_obj.day == format(date, 'd')) {
 
                         (todo_list_obj.categorys).forEach(categorys_obj => {
-                            if (categorys_obj.cat_id === categories[i].cat_id) {
+                            if (categorys_obj.cat_id == categories[i].cat_id) {
                                 categorys_obj.todos.forEach(todos => {
                                     dispatch({
                                         type: 'RENDER',
@@ -250,7 +252,7 @@ export default function TodoList({}) {
                                             id: todos.todo_id,
                                             cat_id: categories[i].cat_id,
                                             text: todos.todo_cont,
-                                            done: ((todos.todo_checked === 0) ? false : true)
+                                            done: ((todos.todo_checked == 0) ? false : true)
                                         }
                                     });
                                 })
@@ -275,7 +277,7 @@ export default function TodoList({}) {
                 cat_title={category.cat_title}
             />)
             todoState.forEach(todo => {
-                if (todo.cat_id === category.cat_id) {
+                if (todo.cat_id == category.cat_id) {
                     category_box.push(<TodoItemNew
                         key={todo.id}
                         id={todo.id}

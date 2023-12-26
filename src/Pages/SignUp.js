@@ -124,7 +124,7 @@ export default function SignUp() {
     }
 
     useEffect(() => {
-        const emailRegex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{3}');
+        const emailRegex = new RegExp('[a-z0-9]+@[a-z]');
 
         if (touching.email === true) {
             setEmail_color(true);

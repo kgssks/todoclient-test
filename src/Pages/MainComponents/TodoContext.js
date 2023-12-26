@@ -1,5 +1,7 @@
-import React, { useReducer, createContext, useRef, useState } from 'react';
-import axios from "axios";
+import React, { useReducer, createContext, useRef,
+    //  useState
+     } from 'react';
+// import axios from "axios";
 
 const initialTodos = [
     // {
@@ -26,7 +28,7 @@ const initialTodos = [
 
 
 function todoReducer(state, action) {
-    let exist = false;
+    // let exist = false;
 
     switch (action.type) {
         case 'CLEAR': // 할 일 초기화

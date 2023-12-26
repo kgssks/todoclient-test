@@ -1,8 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { DateStateContext, DateDispatchContext } from '../DateContext';
+import {  DateDispatchContext } from '../DateContext';
 import { format, addMonths, subMonths } from 'date-fns';
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
-import { isSameMonth, isSameDay, addDays, parse } from 'date-fns';
+import { isSameMonth, isSameDay, addDays, 
+    // parse 
+} from 'date-fns';
 import { RiArrowLeftSLine, RiArrowRightSLine } from 'react-icons/ri';
 import styles from './Calendar.module.css';
 
@@ -92,7 +94,7 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
 
 
 export default function Calendar() {
-    const date = useContext(DateStateContext);
+    // const date = useContext(DateStateContext);
     const dispatch = useContext(DateDispatchContext);
 
     const [currentMonth, setCurrentMonth] = useState(new Date());

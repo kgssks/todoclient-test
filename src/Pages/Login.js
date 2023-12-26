@@ -15,8 +15,8 @@ export default function Login(){
     });
 
     // 필드 포커싱 시 밑줄 색 변환 관리
-    const [id_color, setId_color] = useState(false);
-    const [pw_color, setPw_color] = useState(false);
+    // const [id_color, setId_color] = useState(false);
+    // const [pw_color, setPw_color] = useState(false);
 
     // 버튼 활성화 색상 관리
     const [button, setButton] = useState(false);
